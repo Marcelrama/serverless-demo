@@ -14,10 +14,8 @@
 ###  Servicios POST Registrar Personas
 - El servicio automáticamente convertirá todo de ingles a español.
 - [POST](https://ikiinlpo5c.execute-api.us-east-2.amazonaws.com/dev/personas "POST")
-- Body :
-	
-
-    {
+- Body : ```json
+{
         "birth_year": "19 BBY",
         "eye_color": "Blue",
         "films": [
@@ -43,3 +41,4 @@
             "https://swapi.py4e.com/api/vehicles/14/"
         ]
     }
+```
