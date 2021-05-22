@@ -1,0 +1,82 @@
+
+service: serverlessdemo
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  profile: serverlessUser
+  stage: dev
+  region: us-east-2
+  environment:
+     tableName: ${self:custom.tableName}
+     swapiApi: https://swapi.py4e.com/api
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+          - dynamodb:*
+      Resource: '*'
+
+# Para instalar plugins
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-webpack
+
+package:
+    individually: true
+
+custom:
+  tableName: people
+  webpack:
+    webpackConfig: webpack.config.js
+  dynamodb:
+    stages:
+        - dev
+    start:
+        port: 8000
+        inMemory: true
+        migrate: true
+    migration:
+        dir: lambdas/offline
+  
+# Donde se crean las funciones lambdas
+functions:
+  createPeople:
+    handler: lambdas/endpoints/createPeople.handler
+    events:
+      - http:
+          path: personas
+          method: POST
+          cors: true
+  getFilms:
+    handler: lambdas/endpoints/films.handler
+    events:
+        - http: 
+            path: /swapi/films/{id}
+            method: GET
+            cors: true
+  getPeople:
+    handler: lambdas/endpoints/people.handler
+    events:
+        - http: 
+            path: /swapi/people/{id}
+            method: GET
+            cors: true
+
+# Nombre del bucket en S3 
+resource:
+    - Resource:
+      MyDynamoDbTable:
+          Type: AWS::DynamoDB::Table
+          Properties:
+              TableName: ${self:custom.tableName}
+              AttributeDefinitions:
+                  - AttributeName: ID
+                    AttributeType: S
+              KeySchema:
+                  - AttributeName: ID
+                    KeyType: HASH
+              BillingMode: PAY_PER_REQUEST
+    - ${file(api-gateway.yml)}

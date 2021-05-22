@@ -1,0 +1,35 @@
+{
+  "name": "ServerlessDemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "deploy": "serverless deploy --aws-profile serverlessUser",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "start": "serverless offline start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "serverless-jest-plugin": "^0.3.0"
+  },
+  "devDependencies": {
+    "@shelf/jest-dynamodb": "^1.7.0",
+    "aws-sdk": "^2.912.0",
+    "axios": "^0.21.1",
+    "eslint": "^7.27.0",
+    "jest": "^26.6.3",
+    "serverless": "^2.43.0",
+    "serverless-dynamodb-local": "^0.2.35",
+    "serverless-offline": "^5.12.1",
+    "serverless-webpack": "^5.3.1",
+    "serverless-webpack-plugin": "^0.4.5",
+    "uuid": "^8.3.2",
+    "webpack": "^5.37.0"
+  },
+  "resolutions": {
+    "dynamodb-localhost": "0.0.7"
+  }
+}
