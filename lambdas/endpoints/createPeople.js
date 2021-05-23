@@ -28,10 +28,10 @@ module.exports.handler = async (event) => {
 
   const people = Object.assign(res, { 
     ID: id,
-    fecha_edicion: new Date(),
-    fecha_creacion: new Date() 
+    fecha_edicion: new Date().toISOString(),
+    fecha_creacion:new Date().toISOString()
   });
- 
+
   const addPeople = await Dynamo.write(people, tableName).catch((err) => {
     console.log('err', err);
     return null;
