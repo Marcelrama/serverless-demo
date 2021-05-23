@@ -10,6 +10,9 @@
 
 ###  Servicios GET obtener por Id personas
   - [GET](https://ikiinlpo5c.execute-api.us-east-2.amazonaws.com/dev/swapi/people/2 "GET")
+  
+  ###  Servicios GET obtener todo en BD dynamo
+  - [GET](https://ikiinlpo5c.execute-api.us-east-2.amazonaws.com/dev/personas "GET")
 
 ###  Servicios POST Registrar Personas
 - El servicio automáticamente convertirá todo de ingles a español.

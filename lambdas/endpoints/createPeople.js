@@ -8,30 +8,34 @@ const PeopleDTO = require('../Models/PeopleDTO');
 const tableName = process.env.tableName;
 
 module.exports.handler = async (event) => {
-   
-    const body = event.body;
-  
-    if (!body) { 
-      return Responses._400({message: "Invalid request" }); 
-    }
-    
-    if (!body) {
-      return Responses._400({message: "Missing parameters" }); 
-    }
-    
-    const id = uuid.v1();
-    const res = UTIL.ConvertKeyValue(body, PeopleDTO);
-    const people = Object.assign(res, {ID: id});
+  const body = event.body;
 
-    const addPeople = await Dynamo.write(people, tableName).catch(err => {
-        console.log("err", err)
-        return null;
-    });
-    console.log(addPeople);
-    if (!addPeople) {
-        return Responses._400({ message: 'Failed to write user by ID' });
-    }
+  if (!body) {
+    return Responses._400({ message: 'Request invalida' });
+  }
 
-    return Responses._200( addPeople );
-    
-  };
+  if (!body) {
+    return Responses._400({ message: 'Faltan parametros' });
+  }
+
+  const validation = UTIL.validteFields(JSON.parse(body));
+  if (!validation.status){
+    return Responses._400({ message: validation.msj });
+  }
+
+  const id = uuid.v1();
+  const res = UTIL.ConvertKeyValue(JSON.parse(body), PeopleDTO);
+
+  const people = Object.assign(res, { 
+    ID: id,
+    fecha_edicion: new Date(),
+    fecha_creacion: new Date() 
+  });
+ 
+  const addPeople = await Dynamo.write(people, tableName).catch((err) => {
+    console.log('err', err);
+    return null;
+  });
+
+  return Responses._200(addPeople);
+};

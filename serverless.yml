@@ -7,6 +7,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
   profile: serverlessUser
+  timeout: 10
   stage: dev
   region: us-east-2
   environment:
@@ -31,6 +32,7 @@ custom:
   tableName: people
   webpack:
     webpackConfig: webpack.config.js
+    includeModules: false
   dynamodb:
     stages:
         - dev
@@ -49,7 +51,7 @@ functions:
       - http:
           path: personas
           method: POST
-          cors: true
+          cors: true        
   getFilms:
     handler: lambdas/endpoints/films.handler
     events:
@@ -64,6 +66,13 @@ functions:
             path: /swapi/people/{id}
             method: GET
             cors: true
+  getAllPeople:
+    handler: lambdas/endpoints/getPeople.handler
+    events:
+      - http:
+          path: personas
+          method: GET
+          cors: true 
 
 # Nombre del bucket en S3 
 resource:

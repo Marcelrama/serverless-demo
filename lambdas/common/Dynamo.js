@@ -2,58 +2,49 @@ const AWS = require('aws-sdk');
 
 let options = {};
 if (process.env.IS_OFFLINE) {
-    options = {
-        region: 'localhost',
-        endpoint: 'http://localhost:8000',
-    };
+  options = {
+    region: 'localhost',
+    endpoint: 'http://localhost:8000',
+  };
 }
 
 if (process.env.JEST_WORKER_ID) {
-    options = {
-        endpoint: 'http://localhost:8000',
-        region: 'local-env',
-        sslEnabled: false,
-    };
+  options = {
+    endpoint: 'http://localhost:8000',
+    region: 'local-env',
+    sslEnabled: false,
+  };
 }
 
 const documentClient = new AWS.DynamoDB.DocumentClient(options);
 
 const Dynamo = {
-    async get(ID, TableName) {
-        const params = {
-            TableName,
-            Key: {
-                ID,
-            },
-        };
 
-        const data = await documentClient.get(params).promise();
+  async getAll(TableName) {
+    const params = {
+      TableName: TableName,
+    };
+    return await documentClient.scan(params).promise();
+  },
 
-        if (!data || !data.Item) {
-            throw Error(`There was an error fetching the data for ID of ${ID} from ${TableName}`);
-        }
-    
+  async write(data, TableName) {
+ 
+    if (!data.ID) {
+      return Responses._400({ message: 'ID no valido' });
+    }
 
-        return data.Item;
-    },
+    const params = {
+      TableName,
+      Item: data,
+    };
 
-    async write(data, TableName) {
-        if (!data.ID) {
-            throw Error('no ID on the data');
-        }
+    const res = await documentClient.put(params).promise();
 
-        const params = {
-            TableName,
-            Item: data,
-        };
+    if (!res) {
+      throw Error(`Error al insertar el registro ${data.ID} in table ${TableName}`);
+    }
 
-        const res = await documentClient.put(params).promise();
-
-        if (!res) {
-            throw Error(`There was an error inserting ID of ${data.ID} in table ${TableName}`);
-        }
-
-        return data;
-    },
+    return data;
+  },
 };
 module.exports = Dynamo;
